@@ -25,7 +25,10 @@ module.exports = function(options, done) {
     components: [],
     properties: null,
     tags: null,
-    title: null
+    title: null,
+    display: null,
+    settings: null,
+    access: null
   };
   var sourceForms = src.split(',');
 
@@ -44,6 +47,9 @@ module.exports = function(options, done) {
         destForm.components = form.components;
         destForm.tags = destForm.tags || form.tags;
         destForm.properties = destForm.properties || form.properties;
+        destForm.display = destForm.display || form.display;
+        destForm.settings = destForm.settings || form.settings; // TODO:  have to handle if settings has a PDF to move
+        destForm.access = destForm.access || form.access;  //TODO: is more complicated than just copying names, cuz roles are different per env.
         return cb();
       };
 
@@ -131,13 +137,16 @@ module.exports = function(options, done) {
               name = formPath.join('/');
             }
             var newForm = {
-              title: 'Copy of ' + destForm.title,
+              title: destForm.title,
               name: _.camelCase(name.split('/').join(' ')),
               path: name,
               type: type,
+              display: destForm.display,
               tags: destForm.tags,
+              settings: destForm.settings,
               components: destForm.components,
-              properties: destForm.properties
+              properties: destForm.properties,
+              access: destForm.access
             };
             console.log('Creating new form');
             fetch(projectUrl + '/form', {
